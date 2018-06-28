@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-express-decorator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/28/express-decorator/" class="article-date">
+  <time datetime="2018-06-28T15:01:43.620Z" itemprop="datePublished">2018-06-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/28/express-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要讲解如何使用TypeScript装饰器定义Express路由。文中出现的代码经过简化不能直接运行，完整代码的请戳：<a href="https://github.com/WinfredWang/express-decorator" target="_blank" rel="noopener">https://github.com/WinfredWang/express-decorator</a></p>
+<h3 id="1-为什么使用装饰器"><a href="#1-为什么使用装饰器" class="headerlink" title="1 为什么使用装饰器"></a>1 为什么使用装饰器</h3><p>当我们在使用Express时，经常要暴露RESTful服务，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;);</span><br><span class="line">var app = express();</span><br><span class="line">app.get(&apos;/users&apos;, function(req, res) &#123;</span><br><span class="line">  res.send([&#123;name:&apos;xx&apos;&#125;]);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 路由模块化写法</span><br><span class="line">var router = express.Router();</span><br><span class="line">app.get(&apos;/users&apos;, function(req, res) &#123;</span><br><span class="line">  res.send([&#123;name:&apos;xx&apos;&#125;]);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>熟悉Java WEB童鞋知道<a href="https://baike.baidu.com/item/JAX-RS/10914743?fr=aladdin" target="_blank" rel="noopener"><code>jax-rs</code></a>可以使用标注(annotation)声明服务。例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Path(&quot;/myResource&quot;)</span><br><span class="line">public class SomeResource &#123;</span><br><span class="line">    @GET</span><br><span class="line">    public String doGetAsPlainText() &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    @GET</span><br><span class="line">    public String doGetAsHtml() &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用这种方式声明的服务非常简洁方便，免去了写一坨重复代码之苦，而且看起来更加清晰，那我们看看在Node.js中如何做。</p>
+<hr>
+<h3 id="2-需求"><a href="#2-需求" class="headerlink" title="2 需求"></a>2 需求</h3><p>参照<a href="https://docs.oracle.com/javaee/6/tutorial/doc/gijqy.html" target="_blank" rel="noopener"><code>jax-rs</code></a>规范，我们列出如下需求：</p>
+<ul>
+<li>使用<code>@Path</code>声明RESTful服务路由</li>
+<li>使用<code>@GET/@POST/@DELETE/@PUT</code>声明子路由</li>
+<li>使用<code>@PathParam，@QueryParam，@HeaderParam，@CookieParam，@FormParam,</code>来接受服务参数</li>
+</ul>
+<hr>
+<h3 id="3-实现思路"><a href="#3-实现思路" class="headerlink" title="3 实现思路"></a>3 实现思路</h3><p>在ES6和TypeScript中有新特性:<code>装饰器(Decorator)</code>，正好我们可以借助它实现我们的需求。至于装饰器用法，可以参考我的<a href="http://www.cnblogs.com/winfred/p/8216650.html" target="_blank" rel="noopener">上一篇文章</a>。</p>
+<p><img src="https://user-images.githubusercontent.com/2776992/34775124-ffb5ef42-f64c-11e7-8438-28fb4646e2f5.png" alt="20180107195916"></p>
+<p>上图中左边是Java中定义RESTful代码，右边是Express代码，其实他们本质上是一一对应的。我们只要在装饰器的定义中实现Express 路由即可。</p>
+<p>继续思考，我们Express 路由到底是放到那个注解中实现呢？<br>我们知道不同装饰器(类/方法/参数)执行顺序不同：</p>
+<blockquote>
+<p>参数装饰器先执行，然后方法最后类装饰器</p>
+</blockquote>
+<p>根据这个特性我们应该将核心实现放到类装饰器<code>Path</code>中执行是不是就可以了呢？</p>
+<p>其实不是，我们看如下代码，我们在<code>user-service.ts</code>中定义了<code>UserService</code>服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Path(&quot;/user&quot;)</span><br><span class="line"> class UserService &#123;</span><br><span class="line">    @GET(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">    public getUsers(@PathParam(&quot;id&quot;) id： string) &#123;</span><br><span class="line">       // TODO</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>我们定义好了服务，然后想让Node.js模块加载，我们必须在工程入口模块(main.ts)中导入上述文件<br>main.ts代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import &#123; HelloService &#125; from &apos;./hello-service&apos;</span><br><span class="line"></span><br><span class="line">// TODO</span><br></pre></td></tr></table></figure></p>
+<p>上述服务代码会执行吗？也就是说<br>如果仅仅导入模块，而没有使用该模块的话，Node.js是否会加载这个模块呢，换句话说这个模块会执行吗？答案是NO。<br>为啥呀？因为Node.js对其做了优化，只有一个模块被真正用到才会加载。</p>
+<p>上有政策，下有对策。我们就在模块引用一下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import &#123; HelloService &#125; from &apos;./hello-service&apos;</span><br><span class="line"></span><br><span class="line">HelloService; // 就是为了让Node加载它</span><br></pre></td></tr></table></figure></p>
+<p>这样好吗，当然不好。谁知道这是干嘛的。</p>
+<p>所以我们应该换了思路，将Express 注册路由代码拿到装饰器外部，额外提供注册服务的入口，通过该注册服务入口，用户可以显式看到有哪些服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import &#123; HelloService &#125; from &apos;./hello-service&apos;;</span><br><span class="line">import &#123;RegisterService &#125; from &apos;xxx&apos;;</span><br><span class="line"></span><br><span class="line">RegisterService([HelloService]);//注册服务</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="4-装饰器核心代码"><a href="#4-装饰器核心代码" class="headerlink" title="4 装饰器核心代码"></a>4 装饰器核心代码</h3><p>基于上面的思考，我们在装饰器的实现中只是单纯地存储RESTful url以及参数即可，剩下服务注册工作交给<code>RegisterService</code>去做。</p>
+<h5 id="Path装饰器实现"><a href="#Path装饰器实现" class="headerlink" title="Path装饰器实现"></a>Path装饰器实现</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> function Path(baseUrl: string) &#123;</span><br><span class="line">    return function (target) &#123;</span><br><span class="line">        target.prototype.$Meta = &#123;</span><br><span class="line">            baseUrl: baseUrl</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们将RESTful路由存储到类的原型中，以便服务实例化时能获取到。</p>
+<h5 id="GET-POST-DELETE-PUT"><a href="#GET-POST-DELETE-PUT" class="headerlink" title="GET/POST/DELETE/PUT"></a>GET/POST/DELETE/PUT</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function GET (url: string) =&gt; &#123;</span><br><span class="line">    return (target, methodName: string, descriptor: PropertyDescriptor) =&gt; &#123;</span><br><span class="line">        let meta = getMethod(target, methodName);</span><br><span class="line">        meta.subUrl = url;</span><br><span class="line">        meta.httpMethod = httpMehod;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="QueryParam-PathParam等实现"><a href="#QueryParam-PathParam等实现" class="headerlink" title="QueryParam/PathParam等实现"></a>QueryParam/PathParam等实现</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function PahtParam(paramType: string) &#123;</span><br><span class="line">    return function (target, methodName: string, paramIndex: number) &#123;</span><br><span class="line">        let meta = getMethod(target, methodName);</span><br><span class="line">        meta.params.push(&#123;</span><br><span class="line">            name: paramName ? paramName : paramType,</span><br><span class="line">            index: paramIndex,</span><br><span class="line">            type: paramType</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述就装饰自身代码，本质上就是讲路由、http请求方法和参数存储到类的原型对象中，以便后续可以去到。</p>
+<h3 id="5-注册服务核心代码"><a href="#5-注册服务核心代码" class="headerlink" title="5 注册服务核心代码"></a>5 注册服务核心代码</h3><h5 id="路由实现"><a href="#路由实现" class="headerlink" title="路由实现"></a>路由实现</h5><p>经过上面的分析，我们可知注册服务主要将Express中注册路由交由我们框架处理,核心代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">function RegisterService(app, service) &#123;</span><br><span class="line">    let router = Router();</span><br><span class="line"></span><br><span class="line">    // 1. 获取存储在原型对象中的http请求信息()</span><br><span class="line">    let meta = getClazz(service.prototype);</span><br><span class="line"></span><br><span class="line">    // 2. 实例化服务类</span><br><span class="line">    let serviceInstance = new service();</span><br><span class="line">    let routes = meta.routes;</span><br><span class="line"></span><br><span class="line">    for (const methodName in routes) &#123;</span><br><span class="line">        let methodMeta = routes[methodName];</span><br><span class="line">        let httpMethod = methodMeta.httpMethod;</span><br><span class="line"></span><br><span class="line">        // 3. 回调函数</span><br><span class="line">        let fn = (req, res, next) =&gt; &#123;</span><br><span class="line">            let result = service.prototype[methodName].apply(serviceInstance, params);</span><br><span class="line">            res.send(result);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        // 4. 注册路由</span><br><span class="line">        router[httpMethod].apply(router, methodMeta.subUrl);</span><br><span class="line">    &#125;</span><br><span class="line">    // 5. 路由中间件</span><br><span class="line">    app.use.apply(app, [meta.baseUrl]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-images.githubusercontent.com/2776992/34775138-0b038fbc-f64d-11e7-95db-e72548da8064.png" alt="image 6"></p>
+<h5 id="http请求参数处理"><a href="#http请求参数处理" class="headerlink" title="http请求参数处理"></a>http请求参数处理</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@GET(&apos;/:id&apos;, [ testMidware1 ])</span><br><span class="line">list( @PathParam(&apos;id&apos;) id: string, @QueryParam(&apos;name&apos;) name: string) &#123;</span><br><span class="line">   return &#123;name:&quot;tom&quot;, age: 10&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用户编码时我们期望回调函数中的参数框架自动注入，而不是让用户自己从<code>request</code>中取，所以在注册服务代码中第3处，框架需要出更加参数装饰器中信息，从request中取值后注入回调函数中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 3. 回调函数</span></span><br><span class="line"><span class="keyword">let</span> params = extractParameters(req, res, methodMeta[<span class="string">'params'</span>]);</span><br><span class="line"><span class="keyword">let</span> fn = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> result = service.prototype[methodName].apply(serviceInstance, params);</span><br><span class="line">    res.send(result);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据参数类型，从request取出对应的值</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">extractParameters</span>(<span class="params">req, paramMeta</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> paramHandlerTpe = &#123;</span><br><span class="line">        <span class="string">'query'</span>: <span class="function">(<span class="params">paramName: string</span>) =&gt;</span> req.query[paramName],</span><br><span class="line">        <span class="string">'path'</span>: <span class="function">(<span class="params">paramName: string</span>) =&gt;</span> req.params[paramName],</span><br><span class="line">        <span class="string">'form'</span>: <span class="function">(<span class="params">paramName: string</span>) =&gt;</span> req.body[paramName],</span><br><span class="line">        <span class="string">'cookie'</span>: <span class="function">(<span class="params">paramName: string</span>) =&gt;</span> req.cookies &amp;&amp; req.cookies[paramName],</span><br><span class="line">        <span class="string">'header'</span>: <span class="function">(<span class="params">paramName</span>) =&gt;</span> req.get(paramName),</span><br><span class="line">        <span class="string">'request'</span>: <span class="function"><span class="params">()</span> =&gt;</span> req, <span class="comment">// 获取request/response对象，做一些特别操作</span></span><br><span class="line">        <span class="string">'response'</span>: <span class="function"><span class="params">()</span> =&gt;</span> res,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> args = [];</span><br><span class="line">    params.forEach(<span class="function"><span class="params">param</span> =&gt;</span> &#123;</span><br><span class="line">        args.push(paramHandlerTpe[param.type](param.name))</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> args;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="response处理"><a href="#response处理" class="headerlink" title="response处理"></a>response处理</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@GET(<span class="string">'/:id'</span>, [ testMidware1 ])</span><br><span class="line">list( @PathParam(<span class="string">'id'</span>) id: string, @QueryParam(<span class="string">'name'</span>) name: string) &#123;</span><br><span class="line">   <span class="keyword">return</span> &#123;<span class="attr">name</span>:<span class="string">"tom"</span>, <span class="attr">age</span>: <span class="number">10</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一个服务处理完成后，总是要向浏览器返回值的，在回调函数中直接使用<code>return</code>语句，而不是自己调用response.send方法， 如下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 3. 回调函数</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> result = service.prototype[methodName].apply(serviceInstance, params);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 支持promise处理</span></span><br><span class="line">    <span class="keyword">if</span> (result <span class="keyword">instanceof</span> <span class="built_in">Promise</span>) &#123;</span><br><span class="line">        result.then(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">            !res.headersSent &amp;&amp; res.send(value);</span><br><span class="line">        &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">            next(err);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (result !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">        !res.headersSent &amp;&amp; res.send(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h3><p>以上就是我们框架处理核心代码，核心实现主要有两步：</p>
+<ul>
+<li>装饰器本身用来存在路由信息</li>
+<li>注册机制实现express路由注册（回调函数参数处理，返回值处理等）</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/28/express-decorator/" data-id="cjiyoomk8000028r4nuem86k1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/06/28/express-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
