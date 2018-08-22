@@ -25,6 +25,13 @@
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   
   <link rel="stylesheet" href="/css/style.css">
+  <script> var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?3441f2d37a71135861ed9ff6906720f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();</script>    
 </head>
 
 <body>
@@ -66,6 +73,82 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-ts-decorator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/22/ts-decorator/" class="article-date">
+  <time datetime="2018-08-22T13:45:41.978Z" itemprop="datePublished">2018-08-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/22/ts-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>装饰器是一种特殊类型的声明，它能够被附加到类声明，方法， 访问符，属性或参数上，可以修改类的行为。 装饰器使用 @expression这种形式，expression求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。</p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Path(&apos;/hello&apos;)</span><br><span class="line">class HelloService &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在<code>TypeScript</code>中装饰器还属于实验性语法，所以要想使用必须在配置文件中<code>tsconfig.json</code>编译选项中开启：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;compilerOptions&quot;: &#123;</span><br><span class="line">        &quot;experimentalDecorators&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="如何定义装饰器"><a href="#如何定义装饰器" class="headerlink" title="如何定义装饰器"></a>如何定义装饰器</h3><p>装饰器本身其实就是一个函数，理论上忽略参数的话，任何函数都可以当做装饰器使用。例：</p>
+<p>demo.ts<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function Path(target:any) &#123;</span><br><span class="line">    console.log(&quot;I am decorator.&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Path</span><br><span class="line">class HelloService &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>tsc</code>编译后,执行命令<code>node demo.js</code>，输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I am decorator.</span><br></pre></td></tr></table></figure></p>
+<h3 id="装饰器执行时机"><a href="#装饰器执行时机" class="headerlink" title="装饰器执行时机"></a>装饰器执行时机</h3><p>修饰器对类的行为的改变，是代码编译时发生的（不是TypeScript编译，而是js在执行机中编译阶段），而不是在运行时。这意味着，修饰器能在编译阶段运行代码。也就是说，修饰器本质就是编译时执行的函数。<br>在Node.js环境中模块一加载时就会执行</p>
+<h3 id="函数柯里化解决参数问题"><a href="#函数柯里化解决参数问题" class="headerlink" title="函数柯里化解决参数问题"></a>函数柯里化解决参数问题</h3><p>但是实际场景中，有时希望向装饰器传入一些参数, 如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Path(&quot;/hello&quot;, &quot;world&quot;)</span><br><span class="line">class HelloService &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此时上面装饰器方法就不满足了（VSCode编译报错），这是我们可以借助JavaScript中函数柯里化特性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Path(p1: string, p2: string) &#123;</span><br><span class="line">    return function (target) &#123; //  这才是真正装饰器</span><br><span class="line">        // do something </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="五种装饰器"><a href="#五种装饰器" class="headerlink" title="五种装饰器"></a>五种装饰器</h3><p>在TypeScript中装饰器可以修饰四种语句：类，属性，访问器，方法以及方法参数。</p>
+<h5 id="1-类装饰器"><a href="#1-类装饰器" class="headerlink" title="1 类装饰器"></a>1 类装饰器</h5><p>应用于类构造函数，其参数是类的构造函数。<br>注意<code>class</code>并不是像Java那种强类型语言中的类，而是JavaScript构造函数的语法糖。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function Path(path: string) &#123;</span><br><span class="line">    return function (target: Function) &#123;</span><br><span class="line">        !target.prototype.$Meta &amp;&amp; (target.prototype.$Meta = &#123;&#125;)</span><br><span class="line">        target.prototype.$Meta.baseUrl = path;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Path(&apos;/hello&apos;)</span><br><span class="line">class HelloService &#123;</span><br><span class="line">    constructor() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(HelloService.prototype.$Meta);// 输出：&#123; baseUrl: &apos;/hello&apos; &#125;</span><br><span class="line">let hello = new HelloService();</span><br><span class="line">console.log(hello.$Meta) // 输出：&#123; baseUrl: &apos;/hello&apos; &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="2-方法装饰器"><a href="#2-方法装饰器" class="headerlink" title="2 方法装饰器"></a>2 方法装饰器</h5><p>它会被应用到方法的 属性描述符上，可以用来监视，修改或者替换方法定义。<br>方法装饰会在运行时传入下列3个参数：</p>
+<ul>
+<li>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</li>
+<li>2、成员的名字。</li>
+<li>3、成员的属性描述符。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function GET(url: string) &#123;</span><br><span class="line">    return function (target, methodName: string, descriptor: PropertyDescriptor) &#123;</span><br><span class="line">        !target.$Meta &amp;&amp; (target.$Meta = &#123;&#125;);</span><br><span class="line">        target.$Meta[methodName] = url;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class HelloService &#123;</span><br><span class="line">    constructor() &#123; &#125;</span><br><span class="line">    @GET(&quot;xx&quot;)</span><br><span class="line">    getUser() &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log((&lt;any&gt;HelloService).$Meta);</span><br></pre></td></tr></table></figure>
+<p>注意：在vscode编辑时有时会报<code>作为表达式调用时，无法解析方法修饰器的签名。</code>错误，此时需要在tsconfig.json中增加target配置项：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;compilerOptions&quot;: &#123;</span><br><span class="line">        &quot;target&quot;: &quot;es6&quot;,</span><br><span class="line">        &quot;experimentalDecorators&quot;: true,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="3-方法参数装饰器"><a href="#3-方法参数装饰器" class="headerlink" title="3 方法参数装饰器"></a>3 方法参数装饰器</h5><p>参数装饰器表达式会在运行时当作函数被调用，传入下列3个参数：</p>
+<ul>
+<li>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</li>
+<li>2、参数的名字。</li>
+<li>3、参数在函数参数列表中的索引。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function PathParam(paramName: string) &#123;</span><br><span class="line">    return function (target, methodName: string, paramIndex: number) &#123;</span><br><span class="line">        !target.$Meta &amp;&amp; (target.$Meta = &#123;&#125;);</span><br><span class="line">        target.$Meta[paramIndex] = paramName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class HelloService &#123;</span><br><span class="line">    constructor() &#123; &#125;</span><br><span class="line">    getUser( @PathParam(&quot;userId&quot;) userId: string) &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log((&lt;any&gt;HelloService).prototype.$Meta); // &#123;&apos;0&apos;:&apos;userId&apos;&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="4-属性装饰器"><a href="#4-属性装饰器" class="headerlink" title="4 属性装饰器"></a>4 属性装饰器</h5><p>属性装饰器表达式会在运行时当作函数被调用，传入下列2个参数：</p>
+<ul>
+<li>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</li>
+<li>2、成员的名字。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function DefaultValue(value: string) &#123;</span><br><span class="line">    return function (target: any, propertyName: string) &#123;</span><br><span class="line">        target[propertyName] = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Hello &#123;</span><br><span class="line">    @DefaultValue(&quot;world&quot;) greeting: string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(new Hello().greeting);// 输出: world</span><br></pre></td></tr></table></figure>
+<h3 id="装饰器加载顺序"><a href="#装饰器加载顺序" class="headerlink" title="装饰器加载顺序"></a>装饰器加载顺序</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">function ClassDecorator() &#123;</span><br><span class="line">    return function (target) &#123;</span><br><span class="line">        console.log(&quot;I am class decorator&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">function MethodDecorator() &#123;</span><br><span class="line">    return function (target, methodName: string, descriptor: PropertyDescriptor) &#123;</span><br><span class="line">        console.log(&quot;I am method decorator&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">function Param1Decorator() &#123;</span><br><span class="line">    return function (target, methodName: string, paramIndex: number) &#123;</span><br><span class="line">        console.log(&quot;I am parameter1 decorator&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">function Param2Decorator() &#123;</span><br><span class="line">    return function (target, methodName: string, paramIndex: number) &#123;</span><br><span class="line">        console.log(&quot;I am parameter2 decorator&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">function PropertyDecorator() &#123;</span><br><span class="line">    return function (target, propertyName: string) &#123;</span><br><span class="line">        console.log(&quot;I am property decorator&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@ClassDecorator()</span><br><span class="line">class Hello &#123;</span><br><span class="line">    @PropertyDecorator()</span><br><span class="line">    greeting: string;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @MethodDecorator()</span><br><span class="line">    greet( @Param1Decorator() p1: string, @Param2Decorator() p2: string) &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I am property decorator</span><br><span class="line">I am parameter2 decorator</span><br><span class="line">I am parameter1 decorator</span><br><span class="line">I am method decorator</span><br><span class="line">I am class decorator</span><br></pre></td></tr></table></figure></p>
+<p>从上述例子得出如下结论：</p>
+<p>1、有多个参数装饰器时：从最后一个参数依次向前执行</p>
+<p>2、方法和方法参数中参数装饰器先执行。</p>
+<p>3、类装饰器总是最后执行。</p>
+<p>4、方法和属性装饰器，谁在前面谁先执行。因为参数属于方法一部分，所以参数会一直紧紧挨着方法执行。上述例子中属性和方法调换位置，输出如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I am parameter2 decorator</span><br><span class="line">I am parameter1 decorator</span><br><span class="line">I am method decorator</span><br><span class="line">I am property decorator</span><br><span class="line">I am class decorator</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yijianzhongdi.com/2018/08/22/ts-decorator/" data-id="cjl57aixv0000a4r4691p6haa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-express-decorator" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -153,7 +236,17 @@
   
 
 
-</section>
+
+          <script>
+            var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?3441f2d37a71135861ed9ff6906720f1";
+              var s = document.getElementsByTagName("script")[0]; 
+              s.parentNode.insertBefore(hm, s);
+            })();
+            </script>
+        </section>
         
           <aside id="sidebar">
   
@@ -169,7 +262,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li></ul>
     </div>
   </div>
 
@@ -180,6 +273,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/08/22/ts-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
+          </li>
         
           <li>
             <a href="/2018/06/28/express-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
