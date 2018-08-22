@@ -1,103 +1,172 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE HTML>
+<html lang="">
 <head>
-  <meta charset="utf-8">
-  
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="一箭中的">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="https://yijianzhongdi.com">
+    <!--SEO-->
 
-  
-  <title>TypeScript装饰器（decorators） | 一箭中的</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="装饰器是一种特殊类型的声明，它能够被附加到类声明，方法， 访问符，属性或参数上，可以修改类的行为。 装饰器使用 @expression这种形式，expression求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。 例：12@Path(&amp;apos;/hello&amp;apos;)class HelloService &amp;#123;&amp;#125; 在TypeScript中装饰器还属于实验">
-<meta name="keywords" content="个人博客 程序员 前端 Java Node">
-<meta property="og:type" content="article">
-<meta property="og:title" content="TypeScript装饰器（decorators）">
-<meta property="og:url" content="https://yijianzhongdi.com/2018/08/22/ts-decorator/index.html">
-<meta property="og:site_name" content="一箭中的">
-<meta property="og:description" content="装饰器是一种特殊类型的声明，它能够被附加到类声明，方法， 访问符，属性或参数上，可以修改类的行为。 装饰器使用 @expression这种形式，expression求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。 例：12@Path(&amp;apos;/hello&amp;apos;)class HelloService &amp;#123;&amp;#125; 在TypeScript中装饰器还属于实验">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-22T13:59:39.927Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TypeScript装饰器（decorators）">
-<meta name="twitter:description" content="装饰器是一种特殊类型的声明，它能够被附加到类声明，方法， 访问符，属性或参数上，可以修改类的行为。 装饰器使用 @expression这种形式，expression求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。 例：12@Path(&amp;apos;/hello&amp;apos;)class HelloService &amp;#123;&amp;#125; 在TypeScript中装饰器还属于实验">
-  
+
+
+<meta name="keywords" content="个人博客 程序员 前端 Java Node"/>
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>TypeScript装饰器（decorators） | 一箭中的</title>
+
+
     <link rel="alternate" href="/atom.xml" title="一箭中的" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  <script> var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?3441f2d37a71135861ed9ff6906720f1";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();</script>    
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+<link rel="stylesheet" href="/css/bootstrap.min.css?rev=3.3.7">
+<link rel="stylesheet" href="/css/font-awesome.min.css?rev=4.5.0">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?3441f2d37a71135861ed9ff6906720f1";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    
+
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">一箭中的</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">每一天在每一个方面我都越来越好了</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yijianzhongdi.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-ts-decorator" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/22/ts-decorator/" class="article-date">
-  <time datetime="2018-08-22T13:45:41.978Z" itemprop="datePublished">2018-08-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      TypeScript装饰器（decorators）
-    </h1>
-  
 
-      </header>
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  >
+    <div class="main-header-box">
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                <h2> 每一天在每一方面 我都越来越好了 </h2>
+            
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed pull-right" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only"></span>
+                        <i class="fa fa-bars"></i>
+                    </span>
+                    <a class="navbar-brand" href="https://yijianzhongdi.com">一箭中的</a>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation" class="text-center">
+                                <a href="/"><i class="fa "></i>Home</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="TypeScript装饰器（decorators）">
+            
+	            TypeScript装饰器（decorators）
+            
+        </h1>
+        <div class="post-meta">
     
-    <div class="article-entry" itemprop="articleBody">
-      
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <a href="/categories/前端">
+            前端
+        </a>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+                
+                    <a href="/tags/typescript" title='typescript'>
+                        typescript
+                    </a>
+                
+                    <a href="/tags/decorator" title='decorator'>
+                        decorator
+                    </a>
+                
+            
+        </span>
+    </span>
+    
+
+    
+        
+        <span class="fa-wrap">
+            <i class="fa fa-clock-o"></i>
+            <span class="date-meta">2018/08/22</span>
+        </span>
+    
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
         <p>装饰器是一种特殊类型的声明，它能够被附加到类声明，方法， 访问符，属性或参数上，可以修改类的行为。 装饰器使用 @expression这种形式，expression求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。</p>
 <p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Path(&apos;/hello&apos;)</span><br><span class="line">class HelloService &#123;&#125;</span><br></pre></td></tr></table></figure></p>
 <p>在<code>TypeScript</code>中装饰器还属于实验性语法，所以要想使用必须在配置文件中<code>tsconfig.json</code>编译选项中开启：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;compilerOptions&quot;: &#123;</span><br><span class="line">        &quot;experimentalDecorators&quot;: true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -139,119 +208,104 @@
 <p>3、类装饰器总是最后执行。</p>
 <p>4、方法和属性装饰器，谁在前面谁先执行。因为参数属于方法一部分，所以参数会一直紧紧挨着方法执行。上述例子中属性和方法调换位置，输出如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">I am parameter2 decorator</span><br><span class="line">I am parameter1 decorator</span><br><span class="line">I am method decorator</span><br><span class="line">I am property decorator</span><br><span class="line">I am class decorator</span><br></pre></td></tr></table></figure></p>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="https://yijianzhongdi.com/2018/08/22/ts-decorator/" data-id="cjl57aixv0000a4r4691p6haa" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-  
-    <a href="/2018/06/28/express-decorator/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">基于TypeScript装饰器定义Express RESTful 服务</div>
-    </a>
-  
-</nav>
 
-  
+    <div class="post-footer">
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="https://weibo.com/yijianzhongdi" target="_blank">一箭中的</a>
+            
+        </div>
+        <div>
+            
+        </div>
+    </div>
 </article>
 
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2018/08/22/express-decorator/" class="pre-post btn btn-default" title='基于TypeScript装饰器定义Express RESTful 服务'>
+            <i class="fa fa-angle-left fa-fw"></i><span class="hidden-lg">上一篇</span>
+            <span class="hidden-xs">基于TypeScript装饰器定义Express RESTful 服务</span>
+        </a>
+    
+    
+</div>
 
-          <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTE0Ni8xNTY3Mw==">
-            <script type="text/javascript">
-               (function(d, s) {
-                   var j, e = d.getElementsByTagName(s)[0];
-            
-                   if (typeof LivereTower === 'function') { return; }
-            
-                   j = d.createElement(s);
-                   j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-                   j.async = true;
-            
-                   e.parentNode.insertBefore(j, e);
-               })(document, 'script');
-            </script>
-            </div>
-        </section>
+
+    <div id="comments">
         
-          <aside id="sidebar">
-  
-    
+	
+<div id="lv-container" data-id="city" data-uid="MTAyMC8zOTE0Ni8xNTY3Mw==">
+  <script type="text/javascript">
+     (function(d, s) {
+         var j, e = d.getElementsByTagName(s)[0];
+         if (typeof LivereTower === 'function') { return; }
+         j = d.createElement(s);
+         j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+         j.async = true;
+         e.parentNode.insertBefore(j, e);
+     })(document, 'script');
+  </script>
+</div>
 
-  
-    
 
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li></ul>
     </div>
-  </div>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+
+
+
+                </main>
+                
+                    <aside id="article-toc" role="navigation" class="col-md-4">
     <div class="widget">
-      <ul>
+        <h3 class="title">Table of Contents</h3>
         
-          <li>
-            <a href="/2018/08/22/ts-decorator/">TypeScript装饰器（decorators）</a>
-          </li>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何定义装饰器"><span class="toc-text">如何定义装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰器执行时机"><span class="toc-text">装饰器执行时机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数柯里化解决参数问题"><span class="toc-text">函数柯里化解决参数问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五种装饰器"><span class="toc-text">五种装饰器</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-类装饰器"><span class="toc-text">1 类装饰器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-方法装饰器"><span class="toc-text">2 方法装饰器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-方法参数装饰器"><span class="toc-text">3 方法参数装饰器</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-属性装饰器"><span class="toc-text">4 属性装饰器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰器加载顺序"><span class="toc-text">装饰器加载顺序</span></a></li></ol>
         
-          <li>
-            <a href="/2018/06/28/express-decorator/">基于TypeScript装饰器定义Express RESTful 服务</a>
-          </li>
-        
-      </ul>
     </div>
-  </div>
-
-  
 </aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2018 Winfred<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+
+                
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
     </div>
-  </div>
 </footer>
+
+<a id="back-to-top" class="icon-btn hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2017
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
     </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
+</div>
 
 
 
-  </div>
+<script src="/js/app.js?rev=@@hash"></script>
+
+
 </body>
 </html>
