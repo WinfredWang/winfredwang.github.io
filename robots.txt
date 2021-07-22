@@ -1,6 +1,2 @@
-User-agent: Googlebot
-Disallow: /
-Allow: /sports/index.html
-
 User-agent: *
-Disallow: /
+Allow: /
