@@ -11,11 +11,23 @@
 
 
         <button onclick="jumpApp()" style="width:100px;height:100px">Jump</button>
+        <button onclick="jumpAppMaketing()" style="width:100px;height:100px">Jump</button>
         <script>
 
         function jumpApp(){
 if (window.SparkleNative && window.SparkleNative.openAppWithDeepLink) {
                 SparkleNative.openAppWithDeepLink( "https://hibobi.app.link/Qde9X3JM1ib?page_type=detail&hibobi_id=202837&utm_source=Petal Search MX", "com.hibobi.store")
+            } else {
+                location.href = "https://hibobi.app.link/QJynTYLyskb?page_type=detail&hibobi_id=208997&top_ids=&utm_source=Petal Search MX"
+            }
+
+        }
+
+
+        function jumpAppMaketing() {
+
+            if (window.SparkleNative && window.SparkleNative.openAppWithDeepLink) {
+                SparkleNative.openAppWithDeepLink("hiapp://com.huawei.appmarket?activityName=activityUri|appdetail.activity&params=%7B%22params%22%3A%5B%7B%22name%22%3A%22uri%22%2C%22type%22%3A%22String%22%2C%22value%22%3A%22app%7CC5683__autoList_search__qq__null__2__null____null%3Fmaple%3D0%26experiment%3DexpId%253Dmodel14%2523fs%253D1.3859241%2523rs%253D348.30524%2524%2523%2540AFS%2524%2523%2540reqId%253Dnull%2524%2523%2540bId%253Dnull%2524%2523%2540dynRecallQueue%253D0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%252C0%2524%2523%2540GcPersonalRecall%253D0%2524%2523%2540%26appoid%3D82a7f227b986492383be70b88555673c%26phase%3D0%22%7D%5D%7D&channelId=com.huawei.hwsearch&referrer=cc000201&detailType=0", "com.huawei.appmarket")
             } else {
                 location.href = "https://hibobi.app.link/QJynTYLyskb?page_type=detail&hibobi_id=208997&top_ids=&utm_source=Petal Search MX"
             }
