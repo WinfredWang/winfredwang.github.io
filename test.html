@@ -11,7 +11,12 @@
 
 
         <button onclick="jumpApp()" style="width:100px;height:100px">Jump</button>
+
+        <br>
         <button onclick="jumpAppMaketing()" style="width:100px;height:100px">Jump</button>
+
+        <br>
+        <button onclick="jumpPetalSearch()" style="width:100px;height:100px">Jump Petal Search</button>
         <script>
 
         function jumpApp(){
@@ -35,6 +40,15 @@
                 location.href = "https://hibobi.app.link/QJynTYLyskb?page_type=detail&hibobi_id=208997&top_ids=&utm_source=Petal Search MX"
             }
 
+        }
+
+
+        function jumpPetalSearch() {
+            if (window.SparkleNative && window.SparkleNative.openAppWithDeepLink && window.SparkleNative.checkAppInstalled("com.huawei.hwsearch")) {
+                SparkleNative.openAppWithDeepLink("https://www.petalsearch.com", "com.huawei.hwsearch")
+            } else {
+                location.href = "https://hibobi.app.link/QJynTYLyskb?page_type=detail&hibobi_id=208997&top_ids=&utm_source=Petal Search MX"
+            }
         }
             
         </script>
