@@ -4,12 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <style>
+
+html,body{
+    width: 100%;
+    height: 100%;
+}
+#timeContainer {
+    width: 200px;
+    margin-top: 100px;
+}
+        </style>
 </head>
 
 <body>
     <script type="text/javascript" charset="utf-8">
         function load() {
-            console.time();
+            let t = Date.now();
             var pageOptions = {
                 "pubId": "partner-mailru-afs",
                 "personalizedAds": false,
@@ -20,7 +31,14 @@
                 "channel": "497010",
                 adPage: 1,
                 adLoadedCallback(idValue, isLoaded) {
-                    console.timeEnd();
+                    let renderTime = Date.now() - t;
+                    
+                    let script = getScriptTime()
+
+                    let container = document.getElementById('timeContainer')
+                    container.innerHTML = `Render Time: ${renderTime}<br/><div>script Time: ${script}</div>`;
+
+                    container.style.display = "block"
                 }
             };
             var adblock1 = {
@@ -29,7 +47,20 @@
             };
             _googCsa('ads', pageOptions, adblock1);
         }
+
+        function getScriptTime() {
+            var perEntries = performance.getEntriesByName("https://www.google.com/adsense/search/ads.js");
+            var timing = perEntries && perEntries[0];
+            var scriptStartMS = Math.round(timing.fetchStart);
+            var scriptEndMS = Math.round(timing.responseEnd);
+
+            return scriptEndMS - scriptStartMS
+        }
     </script>
     <script async="async" src="https://www.google.com/adsense/search/ads.js" onload="load()"></script>
     <div id="afscontainer1"></div>
+
+    <div style="display: none" id="timeContainer">
+
+    </div>
 </body>
