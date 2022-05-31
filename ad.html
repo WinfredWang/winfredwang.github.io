@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html lang='en-ww' dir="">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-  </head>
-  <body>
-<script async="async" src="https://www.google.com/adsense/search/ads.js"></script>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+</head>
 
-
-<div id="afscontainer1"></div>
-
-<script type="text/javascript" charset="utf-8">
-
-console.time();
-  var pageOptions = {"pubId":"partner-mailru-afs",
-  "personalizedAds":false,
-  "adsafe":"medium",
-  "styleId":"5637065339",
-  "query":"shoes",
-  "hl":"en",
-  "channel":"497010",
-  
-  adPage:1,
-  adLoadedCallback(idValue, isLoaded){
-  console.timeEnd();
-  }};
-
-  var adblock1 = {
-    "container": "afscontainer1"
-  };
-
-  _googCsa('ads', pageOptions, adblock1);
- 
-</script>
+<body>
+    <script type="text/javascript" charset="utf-8">
+        function load() {
+            console.time();
+            var pageOptions = {
+                "pubId": "partner-mailru-afs",
+                "personalizedAds": false,
+                "adsafe": "medium",
+                "styleId": "5637065339",
+                "query": "shoes",
+                "hl": "en",
+                "channel": "497010",
+                adPage: 1,
+                adLoadedCallback(idValue, isLoaded) {
+                    console.timeEnd();
+                }
+            };
+            var adblock1 = {
+                "container": "afscontainer1",
+                number: 1,
+            };
+            _googCsa('ads', pageOptions, adblock1);
+        }
+    </script>
+    <script async="async" src="https://www.google.com/adsense/search/ads.js" onload="load()"></script>
+    <div id="afscontainer1"></div>
 </body>
