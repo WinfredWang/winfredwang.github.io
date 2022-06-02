@@ -5,62 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
 
-html,body{
-    width: 100%;
-    height: 100%;
-}
-#timeContainer {
-    width: 200px;
-    margin-top: 100px;
-}
-        </style>
+        #timeContainer {
+            width: 200px;
+            margin-top: 100px;
+        }
+    </style>
+    <script>
+        window._RenderData = [];
+        window._ScriptData = [];
+
+        function pushData(item) {
+            _RenderData.push(item.renderTime);
+            _ScriptData.push(item.scriptTime);
+            sort()
+
+            document.getElementById("renderP50").innerText = getPx(_RenderData, 50)
+            document.getElementById("renderP80").innerText = getPx(_RenderData, 80)
+            document.getElementById("renderP90").innerText = getPx(_RenderData, 90)
+
+            document.getElementById("rendercount").innerText = _RenderData.length;
+
+
+            document.getElementById("scriptP50").innerText = getPx(_ScriptData, 50)
+            document.getElementById("scriptP80").innerText = getPx(_ScriptData, 80)
+            document.getElementById("scriptP90").innerText = getPx(_ScriptData, 90)
+
+            document.getElementById("scriptcount").innerText = _ScriptData.length;
+
+            refresh();
+        }
+
+        function sort() {
+            _RenderData.sort()
+            _ScriptData.sort()
+        }
+
+        function getPx(list, number) {
+            if (list && list.length) {
+                let index = Math.ceil(number * list.length / 100);
+                return list[index - 1];
+            }
+        }
+
+        function refresh() {
+            setTimeout(() => {
+                window._autoRefresh && (document.getElementById("adFrame").contentWindow.location.reload())
+            }, 500)
+
+        }
+
+        function start() {
+            window._autoRefresh = true;
+            refresh();
+        }
+        function stop() {
+            window._autoRefresh = false;
+        }
+    </script>
 </head>
 
 <body>
-    <script type="text/javascript" charset="utf-8">
-        function load() {
-            let t = Date.now();
-            var pageOptions = {
-                "pubId": "partner-mailru-afs",
-                "personalizedAds": false,
-                "adsafe": "medium",
-                "styleId": "5637065339",
-                "query": "shoes",
-                "hl": "en",
-                "channel": "497010",
-                adPage: 1,
-                adLoadedCallback(idValue, isLoaded) {
-                    let renderTime = Date.now() - t;
-                    
-                    let script = getScriptTime()
+    <iframe id="adFrame" src="g_ad.html" frameborder="0" width="100%" height="400px"></iframe>
 
-                    let container = document.getElementById('timeContainer')
-                    container.innerHTML = `Render Time: ${renderTime}<br/><div>script Time: ${script}</div>`;
+    <div>
+        <div>Render Time</div>
+        count: <span id="rendercount"></span> <br>
+        P50: <span id="renderP50"></span> <br>
+        P80： <span id="renderP80"></span> <br>
+        P90： <span id="renderP90"></span> <br>
+    </div>
+    <br>
+    <div>
+        <div>
+            Script Time
+        </div>
+        count: <span id="scriptcount"></span> <br>
+        P50: <span id="scriptP50"></span><br>
+        P80： <span id="scriptP80"></span><br>
+        P90： <span id="scriptP90"></span><br>
+    </div>
 
-                    container.style.display = "block"
-                }
-            };
-            var adblock1 = {
-                "container": "afscontainer1",
-                number: 1,
-            };
-            _googCsa('ads', pageOptions, adblock1);
-        }
+    <div>
+        <button onclick="start()">start refresh</button>
 
-        function getScriptTime() {
-            var perEntries = performance.getEntriesByName("https://www.google.com/adsense/search/ads.js");
-            var timing = perEntries && perEntries[0];
-            var scriptStartMS = Math.round(timing.fetchStart);
-            var scriptEndMS = Math.round(timing.responseEnd);
-
-            return scriptEndMS - scriptStartMS
-        }
-    </script>
-    <script async="async" src="https://www.google.com/adsense/search/ads.js" onload="load()"></script>
-    <div id="afscontainer1"></div>
-
-    <div style="display: none" id="timeContainer">
-
+        <button onclick="stop()">stop refresh</button>
     </div>
 </body>
