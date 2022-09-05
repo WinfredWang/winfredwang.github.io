@@ -1,19 +1,31 @@
-<html  style="height: fit-content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <img data-src="https://search-img-dra.dbankcdn.com/1b6c8445b6210232dc19597449df195f_m500" id="img-1">
+    <script>
+        window.onload = function () {
+
+            console.log("onload" + Date.now())
+        }
+
+        setTimeout(() => {
+            load()
+        }, 50)
 
 
-    <head>
+        function load(){
+            let img = document.getElementById("img-1")
+            img.setAttribute("src", img.getAttribute("data-src"))
+        }
 
- <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-        
-   
-    </head>
+    </script>
 
-    <body>
-    
-        <a href="kwai://work/72801365508?&openFrom=HuaweiSearch&growth_channel_id=HUAWEI__ALL__SEARCH__VIDEO">jump</a>
-        <a href="https://v.m.chenzhongtech.com/fw/photo/5214605487553239573?appId=HUAWEI_QS&posId=HUAWEI_QS">jump quickapp</a> <br>
-        
-        <a href="search://com.huawei.search/search?w=%E7%96%AB%E6%83%85%E6%95%B0%E6%8D%AE&action=web">search</a>
-
-    </body>
+</body>
 </html>
