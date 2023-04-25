@@ -1,31 +1,165 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-
-    <img data-src="https://search-img-dra.dbankcdn.com/1b6c8445b6210232dc19597449df195f_m500" id="img-1">
-    <script>
-        window.onload = function () {
-
-            console.log("onload" + Date.now())
-        }
-
-        setTimeout(() => {
-            load()
-        }, 50)
-
-
-        function load(){
-            let img = document.getElementById("img-1")
-            img.setAttribute("src", img.getAttribute("data-src"))
-        }
-
-    </script>
-
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Preload</title>
+        <link rel="icon" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/img/favicon.7bc93aff.webp">
+        <link rel="dns-prefetch" href="https://drcn-weather.cloud.huawei.com"/>
+        <link rel="dns-prefetch" href="https://h5hosting-drcn.dbankcdn.cn"/>
+        <link rel="dns-prefetch" href="https://contentcenter-drcn.dbankcdn.cn"/>
+        <link rel="dns-prefetch" href="https://weather-drcn.music.dbankcloud.cn"/>
+        <link rel="dns-prefetch" href="https://hiboardng.hicloud.com"/>
+        <link rel="dns-prefetch" href="https://metrics-drcn.dt.dbankcloud.cn"/>
+        <link rel="dns-prefetch" href="https://pgdt.ugdtimg.com"/>
+        <link rel="dns-prefetch" href="https://cs02-pps-drcn.dbankcdn.cn"/>
+        <link rel="dns-prefetch" href="https://lf26-sf-be-pack-sign.pglstatp-toutiao.com"/>
+        <link rel="dns-prefetch" href="https://lf3-sf-be-pack-sign.pglstatp-toutiao.com"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/chunk-vendors.4890b320.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/AirQuality/AirQuality.a95910ee.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/DailyWeather/DailyWeather.757b8fd2.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/LiveIndexInfos/LiveIndexInfos.4deaf674.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/LiveWeather/LiveWeather.a9200621.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/MultiDayWeather/MultiDayWeather.ec543bef.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/Sunrise/Sunrise.204064ef.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/_feed_/feed.a5892796.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/chunk-0.8061511c.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/chunk-common.ce7bddb4.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/ninetyWeather/ninetyWeather.18ed11a6.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/preload.0482c180.js" as="script"/>
+        <link rel="preload" href="https://h5hosting-drcn.dbankcdn.cn/cch5/weather/scdn-111300SP133/static/js/windDirection/windDirection.9e3a3ac7.js" as="script"/>
+    </head>
+    <body>
+        <h1>Preload Page</h1>
+        <script>
+            !function(e) {
+                var n = {};
+                function t(r) {
+                    if (n[r])
+                        return n[r].exports;
+                    var o = n[r] = {
+                        i: r,
+                        l: !1,
+                        exports: {}
+                    };
+                    return e[r].call(o.exports, o, o.exports, t),
+                    o.l = !0,
+                    o.exports
+                }
+                t.m = e,
+                t.c = n,
+                t.d = function(e, n, r) {
+                    t.o(e, n) || Object.defineProperty(e, n, {
+                        enumerable: !0,
+                        get: r
+                    })
+                }
+                ,
+                t.r = function(e) {
+                    "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, {
+                        value: "Module"
+                    }),
+                    Object.defineProperty(e, "__esModule", {
+                        value: !0
+                    })
+                }
+                ,
+                t.t = function(e, n) {
+                    if (1 & n && (e = t(e)),
+                    8 & n)
+                        return e;
+                    if (4 & n && "object" == typeof e && e && e.__esModule)
+                        return e;
+                    var r = Object.create(null);
+                    if (t.r(r),
+                    Object.defineProperty(r, "default", {
+                        enumerable: !0,
+                        value: e
+                    }),
+                    2 & n && "string" != typeof e)
+                        for (var o in e)
+                            t.d(r, o, function(n) {
+                                return e[n]
+                            }
+                            .bind(null, o));
+                    return r
+                }
+                ,
+                t.n = function(e) {
+                    var n = e && e.__esModule ? function() {
+                        return e.default
+                    }
+                    : function() {
+                        return e
+                    }
+                    ;
+                    return t.d(n, "a", n),
+                    n
+                }
+                ,
+                t.o = function(e, n) {
+                    return Object.prototype.hasOwnProperty.call(e, n)
+                }
+                ,
+                t.p = "/static/",
+                t(t.s = "esNY")
+            }({
+                dV8n: function(e, n, t) {
+                    e.exports = t.p + "img/favicon.7bc93aff.webp"
+                },
+                esNY: function(e, n, t) {
+                    "use strict";
+                    t.r(n);
+                    t("dV8n");
+                    function r(e, n, t, r, o, i, u) {
+                        try {
+                            var a = e[i](u)
+                              , c = a.value
+                        } catch (e) {
+                            return void t(e)
+                        }
+                        a.done ? n(c) : Promise.resolve(c).then(r, o)
+                    }
+                    window.addEventListener("load", (function() {
+                        self.caches.open("preloadTiming").then((e = function*(e) {
+                            var n = performance.timing.navigationStart;
+                            e.put("/pls", new Response(n));
+                            var t = performance.getEntriesByType("resource")
+                              , r = t[t.length - 1];
+                            if (r) {
+                                var o = Math.round(n + r.responseEnd);
+                                e.put("/ple", new Response(o));
+                                var i = o - n;
+                                e.put("/pld", new Response(i))
+                            }
+                        }
+                        ,
+                        n = function() {
+                            var n = this
+                              , t = arguments;
+                            return new Promise((function(o, i) {
+                                var u = e.apply(n, t);
+                                function a(e) {
+                                    r(u, o, i, a, c, "next", e)
+                                }
+                                function c(e) {
+                                    r(u, o, i, a, c, "throw", e)
+                                }
+                                a(void 0)
+                            }
+                            ))
+                        }
+                        ,
+                        function(e) {
+                            return n.apply(this, arguments)
+                        }
+                        ));
+                        var e, n
+                    }
+                    ))
+                }
+            });
+        </script>
+    </body>
 </html>
